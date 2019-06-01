@@ -73,7 +73,6 @@ async def test_request_exception(mocker):
 
     mocker.patch.object(yaar.aiohttp, 'ClientSession', csess)
 
-
     with pytest.raises(yaar.BadHTTPRequest):
         await yaar._request(method, url)
 
