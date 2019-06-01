@@ -2,7 +2,7 @@
 
 from setuptools import setup, find_packages
 
-VERSION = '0.1'
+VERSION = '0.1.1'
 
 DESCRIPTION = """
 Yet Another Asyncio Requets
