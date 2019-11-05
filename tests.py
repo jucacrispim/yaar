@@ -36,7 +36,7 @@ def test_json():
 
 class MockResponse:
 
-    status = 200
+    status = 202
 
     async def text(self):
         return 'some text'
@@ -60,6 +60,19 @@ async def test_request(mocker):
 
 
 @pytest.mark.asyncio
+async def test_request_session(mocker):
+    method = 'GET'
+    url = 'http://somewhere.com'
+
+    csess = MagicMock()
+    csess.request = CoroutineMock(return_value=MockResponse())
+    csess.close = CoroutineMock()
+
+    r = await yaar._request(method, url, session=csess)
+    assert r.text == 'some text'
+
+
+@pytest.mark.asyncio
 async def test_request_exception(mocker):
     method = 'GET'
     url = 'http://somewhere.com'
@@ -73,7 +86,7 @@ async def test_request_exception(mocker):
 
     mocker.patch.object(yaar.aiohttp, 'ClientSession', csess)
 
-    with pytest.raises(yaar.BadHTTPRequest):
+    with pytest.raises(yaar.HTTPRequestError):
         await yaar._request(method, url)
 
 
@@ -147,4 +160,94 @@ async def test_delete(mocker):
 
     resp = await yaar.delete(url)
     assert REQ_TYPE == 'DELETE'
+    assert resp.text == 'some text'
+
+
+@pytest.mark.asyncio
+async def test_patch(mocker):
+    mocker.patch.object(yaar, '_request', MagicMock())
+    url = 'http://somewhere.com'
+    REQ_TYPE = None
+
+    async def req(method, url, **kw):
+        nonlocal REQ_TYPE
+        REQ_TYPE = method
+        return yaar.Response(200, 'some text')
+
+    yaar._request = req
+
+    resp = await yaar.patch(url)
+    assert REQ_TYPE == 'PATCH'
+    assert resp.text == 'some text'
+
+
+@pytest.mark.asyncio
+async def test_options(mocker):
+    mocker.patch.object(yaar, '_request', MagicMock())
+    url = 'http://somewhere.com'
+    REQ_TYPE = None
+
+    async def req(method, url, **kw):
+        nonlocal REQ_TYPE
+        REQ_TYPE = method
+        return yaar.Response(200, 'some text')
+
+    yaar._request = req
+
+    resp = await yaar.options(url)
+    assert REQ_TYPE == 'OPTIONS'
+    assert resp.text == 'some text'
+
+
+@pytest.mark.asyncio
+async def test_head(mocker):
+    mocker.patch.object(yaar, '_request', MagicMock())
+    url = 'http://somewhere.com'
+    REQ_TYPE = None
+
+    async def req(method, url, **kw):
+        nonlocal REQ_TYPE
+        REQ_TYPE = method
+        return yaar.Response(200, 'some text')
+
+    yaar._request = req
+
+    resp = await yaar.head(url)
+    assert REQ_TYPE == 'HEAD'
+    assert resp.text == 'some text'
+
+
+@pytest.mark.asyncio
+async def test_connect(mocker):
+    mocker.patch.object(yaar, '_request', MagicMock())
+    url = 'http://somewhere.com'
+    REQ_TYPE = None
+
+    async def req(method, url, **kw):
+        nonlocal REQ_TYPE
+        REQ_TYPE = method
+        return yaar.Response(200, 'some text')
+
+    yaar._request = req
+
+    resp = await yaar.connect(url)
+    assert REQ_TYPE == 'CONNECT'
+    assert resp.text == 'some text'
+
+
+@pytest.mark.asyncio
+async def test_trace(mocker):
+    mocker.patch.object(yaar, '_request', MagicMock())
+    url = 'http://somewhere.com'
+    REQ_TYPE = None
+
+    async def req(method, url, **kw):
+        nonlocal REQ_TYPE
+        REQ_TYPE = method
+        return yaar.Response(200, 'some text')
+
+    yaar._request = req
+
+    resp = await yaar.trace(url)
+    assert REQ_TYPE == 'TRACE'
     assert resp.text == 'some text'

@@ -34,7 +34,10 @@ import json
 import aiohttp
 
 
-class BadHTTPRequest(Exception):
+VERSION = '0.2'
+
+
+class HTTPRequestError(Exception):
     pass
 
 
@@ -55,11 +58,13 @@ class Response:
         return json.loads(self.text)
 
 
-async def _request(method, url, **kwargs):
+async def _request(method, url, session=None, **kwargs):
     """Performs a http request and returns an instance of
     :class:`yaar.core.requests.Response`
 
     :param method: The requrest's method.
+    :param session: An aiohttp.ClientSession instance. If None a new one will
+      be created.
     :param url: Request's url.
     :param kwargs: Arguments passed to aiohttp.ClientSession.request
         method.
@@ -67,7 +72,7 @@ async def _request(method, url, **kwargs):
 
     loop = asyncio.get_event_loop()
 
-    client = aiohttp.ClientSession(loop=loop)
+    client = session or aiohttp.ClientSession(loop=loop)
     try:
         resp = await client.request(method, url, **kwargs)
         status = resp.status
@@ -77,54 +82,123 @@ async def _request(method, url, **kwargs):
         await client.close()
 
     r = Response(status, text)
-    if r.status != 200:
-        raise BadHTTPRequest(r.status, r.text)
+    if r.status >= 400:
+        raise HTTPRequestError(r.status, r.text)
     return r
 
 
-async def get(url, **kwargs):
+async def get(url, session=None, **kwargs):
     """Performs a http GET request
 
     :param url: Request's url.
+    :param session: Session passed to :func:`yaar.core.requests._request`.
     :param kwargs: Args passed to :func:`yaar.core.requests._request`.
     """
 
     method = 'GET'
-    resp = await _request(method, url, **kwargs)
+    resp = await _request(method, url, session=None, **kwargs)
     return resp
 
 
-async def post(url, **kwargs):
+async def post(url, session=None, **kwargs):
     """Performs a http POST request
 
     :param url: Request's url.
+    :param session: Session passed to :func:`yaar.core.requests._request`.
     :param kwargs: Args passed to :func:`yaar.core.requests._request`.
     """
 
     method = 'POST'
-    resp = await _request(method, url, **kwargs)
+    resp = await _request(method, url, session=None, **kwargs)
     return resp
 
 
-async def put(url, **kwargs):
+async def put(url, session=None, **kwargs):
     """Performs a http PUT request
 
     :param url: Request's url.
+    :param session: Session passed to :func:`yaar.core.requests._request`.
     :param kwargs: Args passed to :func:`yaar.core.requests._request`.
     """
 
     method = 'PUT'
-    resp = await _request(method, url, **kwargs)
+    resp = await _request(method, url, session=None, **kwargs)
     return resp
 
 
-async def delete(url, **kwargs):
+async def delete(url, session=None, **kwargs):
     """Performs a http DELETE request
 
     :param url: Request's url.
+    :param session: Session passed to :func:`yaar.core.requests._request`.
     :param kwargs: Args passed to :func:`yaar.core.requests._request`.
     """
 
     method = 'DELETE'
-    resp = await _request(method, url, **kwargs)
+    resp = await _request(method, url, session=None, **kwargs)
+    return resp
+
+
+async def patch(url, session=None, **kwargs):
+    """Performs a http PATCH request
+
+    :param url: Request's url.
+    :param session: Session passed to :func:`yaar.core.requests._request`.
+    :param kwargs: Args passed to :func:`yaar.core.requests._request`.
+    """
+
+    method = 'PATCH'
+    resp = await _request(method, url, session=None, **kwargs)
+    return resp
+
+
+async def options(url, session=None, **kwargs):
+    """Performs a http OPTIONS request
+
+    :param url: Request's url.
+    :param session: Session passed to :func:`yaar.core.requests._request`.
+    :param kwargs: Args passed to :func:`yaar.core.requests._request`.
+    """
+
+    method = 'OPTIONS'
+    resp = await _request(method, url, session=None, **kwargs)
+    return resp
+
+
+async def head(url, session=None, **kwargs):
+    """Performs a http HEAD request
+
+    :param url: Request's url.
+    :param session: Session passed to :func:`yaar.core.requests._request`.
+    :param kwargs: Args passed to :func:`yaar.core.requests._request`.
+    """
+
+    method = 'HEAD'
+    resp = await _request(method, url, session=None, **kwargs)
+    return resp
+
+
+async def connect(url, session=None, **kwargs):
+    """Performs a http CONNECT request
+
+    :param url: Request's url.
+    :param session: Session passed to :func:`yaar.core.requests._request`.
+    :param kwargs: Args passed to :func:`yaar.core.requests._request`.
+    """
+
+    method = 'CONNECT'
+    resp = await _request(method, url, session=None, **kwargs)
+    return resp
+
+
+async def trace(url, session=None, **kwargs):
+    """Performs a http TRACE request
+
+    :param url: Request's url.
+    :param session: Session passed to :func:`yaar.core.requests._request`.
+    :param kwargs: Args passed to :func:`yaar.core.requests._request`.
+    """
+
+    method = 'TRACE'
+    resp = await _request(method, url, session=None, **kwargs)
     return resp
