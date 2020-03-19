@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from setuptools import setup, find_packages
+from setuptools import setup
+
 
 def get_version_from_file():
     # get version number from __init__ file

@@ -34,7 +34,7 @@ import json
 import aiohttp
 
 
-VERSION = '0.2'
+VERSION = '0.2.1'
 
 
 class HTTPRequestError(Exception):
@@ -96,7 +96,7 @@ async def get(url, session=None, **kwargs):
     """
 
     method = 'GET'
-    resp = await _request(method, url, session=None, **kwargs)
+    resp = await _request(method, url, session=session, **kwargs)
     return resp
 
 
@@ -109,7 +109,7 @@ async def post(url, session=None, **kwargs):
     """
 
     method = 'POST'
-    resp = await _request(method, url, session=None, **kwargs)
+    resp = await _request(method, url, session=session, **kwargs)
     return resp
 
 
@@ -122,7 +122,7 @@ async def put(url, session=None, **kwargs):
     """
 
     method = 'PUT'
-    resp = await _request(method, url, session=None, **kwargs)
+    resp = await _request(method, url, session=session, **kwargs)
     return resp
 
 
@@ -135,7 +135,7 @@ async def delete(url, session=None, **kwargs):
     """
 
     method = 'DELETE'
-    resp = await _request(method, url, session=None, **kwargs)
+    resp = await _request(method, url, session=session, **kwargs)
     return resp
 
 
@@ -148,7 +148,7 @@ async def patch(url, session=None, **kwargs):
     """
 
     method = 'PATCH'
-    resp = await _request(method, url, session=None, **kwargs)
+    resp = await _request(method, url, session=session, **kwargs)
     return resp
 
 
@@ -161,7 +161,7 @@ async def options(url, session=None, **kwargs):
     """
 
     method = 'OPTIONS'
-    resp = await _request(method, url, session=None, **kwargs)
+    resp = await _request(method, url, session=session, **kwargs)
     return resp
 
 
@@ -174,7 +174,7 @@ async def head(url, session=None, **kwargs):
     """
 
     method = 'HEAD'
-    resp = await _request(method, url, session=None, **kwargs)
+    resp = await _request(method, url, session=session, **kwargs)
     return resp
 
 
@@ -187,7 +187,7 @@ async def connect(url, session=None, **kwargs):
     """
 
     method = 'CONNECT'
-    resp = await _request(method, url, session=None, **kwargs)
+    resp = await _request(method, url, session=session, **kwargs)
     return resp
 
 
@@ -200,5 +200,5 @@ async def trace(url, session=None, **kwargs):
     """
 
     method = 'TRACE'
-    resp = await _request(method, url, session=None, **kwargs)
+    resp = await _request(method, url, session=session, **kwargs)
     return resp
