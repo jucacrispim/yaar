@@ -25,12 +25,12 @@ import yaar
 
 
 def test_response():
-    resp = yaar.Response(200, 'some text')
+    resp = yaar.Response(200, b'some text')
     assert resp.text == 'some text'
 
 
 def test_json():
-    resp = yaar.Response(200, yaar.json.dumps({'some': 'json'}))
+    resp = yaar.Response(200, yaar.json.dumps({'some': 'json'}).encode())
     assert resp.json()
 
 
@@ -38,8 +38,8 @@ class MockResponse:
 
     status = 202
 
-    async def text(self):
-        return 'some text'
+    async def read(self):
+        return b'some text'
 
     async def release(self):
         pass
@@ -56,6 +56,7 @@ async def test_request(mocker):
     mocker.patch.object(yaar.aiohttp, 'ClientSession', csess)
 
     r = await yaar._request(method, url)
+    assert r.content == b'some text'
     assert r.text == 'some text'
 
 
@@ -100,7 +101,7 @@ async def test_get(mocker):
         nonlocal REQ_TYPE
 
         REQ_TYPE = method
-        return yaar.Response(200, 'some text')
+        return yaar.Response(200, b'some text')
 
     yaar._request = req
 
@@ -118,7 +119,7 @@ async def test_post(mocker):
     async def req(method, url, **kw):
         nonlocal REQ_TYPE
         REQ_TYPE = method
-        return yaar.Response(200, 'some text')
+        return yaar.Response(200, b'some text')
 
     yaar._request = req
 
@@ -136,7 +137,7 @@ async def test_put(mocker):
     async def req(method, url, **kw):
         nonlocal REQ_TYPE
         REQ_TYPE = method
-        return yaar.Response(200, 'some text')
+        return yaar.Response(200, b'some text')
 
     yaar._request = req
 
@@ -154,7 +155,7 @@ async def test_delete(mocker):
     async def req(method, url, **kw):
         nonlocal REQ_TYPE
         REQ_TYPE = method
-        return yaar.Response(200, 'some text')
+        return yaar.Response(200, b'some text')
 
     yaar._request = req
 
@@ -172,7 +173,7 @@ async def test_patch(mocker):
     async def req(method, url, **kw):
         nonlocal REQ_TYPE
         REQ_TYPE = method
-        return yaar.Response(200, 'some text')
+        return yaar.Response(200, b'some text')
 
     yaar._request = req
 
@@ -190,7 +191,7 @@ async def test_options(mocker):
     async def req(method, url, **kw):
         nonlocal REQ_TYPE
         REQ_TYPE = method
-        return yaar.Response(200, 'some text')
+        return yaar.Response(200, b'some text')
 
     yaar._request = req
 
@@ -208,7 +209,7 @@ async def test_head(mocker):
     async def req(method, url, **kw):
         nonlocal REQ_TYPE
         REQ_TYPE = method
-        return yaar.Response(200, 'some text')
+        return yaar.Response(200, b'some text')
 
     yaar._request = req
 
@@ -226,7 +227,7 @@ async def test_connect(mocker):
     async def req(method, url, **kw):
         nonlocal REQ_TYPE
         REQ_TYPE = method
-        return yaar.Response(200, 'some text')
+        return yaar.Response(200, b'some text')
 
     yaar._request = req
 
@@ -244,7 +245,7 @@ async def test_trace(mocker):
     async def req(method, url, **kw):
         nonlocal REQ_TYPE
         REQ_TYPE = method
-        return yaar.Response(200, 'some text')
+        return yaar.Response(200, b'some text')
 
     yaar._request = req
 

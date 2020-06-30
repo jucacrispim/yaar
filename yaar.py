@@ -34,7 +34,7 @@ import json
 import aiohttp
 
 
-VERSION = '0.2.1'
+VERSION = '0.3.0'
 
 
 class HTTPRequestError(Exception):
@@ -44,13 +44,21 @@ class HTTPRequestError(Exception):
 class Response:
     """Encapsulates a response from a http request"""
 
-    def __init__(self, status, text):
+    def __init__(self, status, content):
         """Constructor for Response.
 
         :param status: The response status.
-        :param text: The response text."""
+        :param content: The response content as bytes."""
         self.status = status
-        self.text = text
+        self.content = content
+        self._text = None
+
+    @property
+    def text(self):
+        if self._text is not None:  # pragma no cover
+            return self._text
+        self._text = self.content.decode()
+        return self._text
 
     def json(self):
         """Loads the json in the response text."""
@@ -76,12 +84,12 @@ async def _request(method, url, session=None, **kwargs):
     try:
         resp = await client.request(method, url, **kwargs)
         status = resp.status
-        text = await resp.text()
+        content = await resp.read()
         await resp.release()
     finally:
         await client.close()
 
-    r = Response(status, text)
+    r = Response(status, content)
     if r.status >= 400:
         raise HTTPRequestError(r.status, r.text)
     return r
