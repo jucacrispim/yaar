@@ -29,8 +29,3 @@ classifiers = [
 
 [tool.setuptools.dynamic]
 version = {attr = "yaar.__version__"}
-
-[tool.setuptools.packages.find]
-where = ["."]
-exclude = ["tests*"]
-include = ["yaar"]
