@@ -18,7 +18,7 @@
 # along with yaar. If not, see <http://www.gnu.org/licenses/>.
 
 
-from asynctest import MagicMock, CoroutineMock
+from unittest.mock import MagicMock, AsyncMock
 import pytest
 
 import yaar
@@ -51,8 +51,8 @@ async def test_request(mocker):
     url = 'http://somewhere.com'
 
     csess = MagicMock()
-    csess.return_value.request = CoroutineMock(return_value=MockResponse())
-    csess.return_value.close = CoroutineMock()
+    csess.return_value.request = AsyncMock(return_value=MockResponse())
+    csess.return_value.close = AsyncMock()
     mocker.patch.object(yaar.aiohttp, 'ClientSession', csess)
 
     r = await yaar._request(method, url)
@@ -66,8 +66,8 @@ async def test_request_session(mocker):
     url = 'http://somewhere.com'
 
     csess = MagicMock()
-    csess.request = CoroutineMock(return_value=MockResponse())
-    csess.close = CoroutineMock()
+    csess.request = AsyncMock(return_value=MockResponse())
+    csess.close = AsyncMock()
 
     r = await yaar._request(method, url, session=csess)
     assert r.text == 'some text'
@@ -82,8 +82,8 @@ async def test_request_exception(mocker):
     mock_response.status = 500
 
     csess = MagicMock()
-    csess.return_value.request = CoroutineMock(return_value=mock_response)
-    csess.return_value.close = CoroutineMock()
+    csess.return_value.request = AsyncMock(return_value=mock_response)
+    csess.return_value.close = AsyncMock()
 
     mocker.patch.object(yaar.aiohttp, 'ClientSession', csess)
 
