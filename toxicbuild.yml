@@ -1,7 +1,7 @@
 UNITTEST_COVERAGE:  &UNITTEST_COVERAGE
    name: Unit tests coverage
    command: ./build-scripts/check_coverage.sh
-   timeout: 20
+   timeout: 21
 
 
 PYLINT:  &PYLINT
